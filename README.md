@@ -1,7 +1,7 @@
 # cosmos-quest-battle-simulator
 Simulator of monster battles in http://www.kongregate.com/games/GaiaByte/cosmos-quest
 
-Can simulate battle between given monster teams and compose team within given cost and number of mosnters contraints to beat given enemy.
+Can simulate battle between given monster teams and compose team within given cost and number of monsters contraints to beat given enemy.
 
 # Usage
 Example:
@@ -20,4 +20,9 @@ Battle result:
 
 Note that script is self-documented (try `./monsters.py --help`, `./monsters.py compose_team --help`)
 
-**Monster are always writeen left-to-right** In other words first monster that gets a turn is written leftmost. Note that this is defferent from monster order in the game, which shows user monsters in reversed order.
+**Monster are always written left-to-right** In other words first monster that gets a turn is written leftmost. Note that this is defferent from monster order in the game, which shows user monsters in reversed order.
+
+# Performance
+Defenitely needs tweaking. Current speed measurements:
+![Graph of current performance](benchmark/current_performance.svg?raw=true)
+apparently running the simulation via `pypy` is preferable.
