@@ -10,12 +10,6 @@ class Monster(object):
     #__slots__ = ['element', 'rank', 'cost', 'power', 'hp']
 
     # TODO: for readonly see https://stackoverflow.com/a/4828492
-    def __init__(self, element, rank, cost, power, hp, readonly=False):
-        self.element = element
-        self.rank = rank
-        self.cost = cost
-        self.power = power
-        self.hp = hp
 
     def __str__(self):
         return self.__repr__()
@@ -43,6 +37,150 @@ class Team(tuple):
 
     # Python2 compatibility
     __nonzero__ = __bool__
+
+
+class AirMonster(Monster):
+    element = 'a'
+
+
+class EarthMonster(Monster):
+    element = 'e'
+
+
+class FireMonster(Monster):
+    element = 'f'
+
+
+class WaterMonster(Monster):
+    element = 'w'
+
+
+class A1(AirMonster):
+    rank = 1
+    cost = 1000
+    power = 8
+    hp = 20
+
+class A2(AirMonster):
+    rank = 2
+    cost = 3900
+    power = 6
+    hp = 48
+
+class A3(AirMonster):
+    rank = 3
+    cost = 8000
+    power = 12
+    hp = 36
+
+class A4(AirMonster):
+    rank = 4
+    cost = 15000
+    power = 26
+    hp = 24
+
+class A5(AirMonster):
+    rank = 5
+    cost = 41000
+    power = 20
+    hp = 60
+
+
+class W1(WaterMonster):
+    rank = 1
+    cost = 1400
+    power = 6
+    hp = 30
+
+class W2(WaterMonster):
+    rank = 2
+    cost = 3900
+    power = 12
+    hp = 24
+
+class W3(WaterMonster):
+    rank = 3
+    cost = 8000
+    power = 24
+    hp = 18
+
+class W4(WaterMonster):
+    rank = 4
+    cost = 18000
+    power = 20
+    hp = 36
+
+class W5(WaterMonster):
+    rank = 5
+    cost = 52000
+    power = 18
+    hp = 78
+
+class E1(EarthMonster):
+    rank = 1
+    cost = 1300
+    power = 4
+    hp = 44
+
+class E2(EarthMonster):
+    rank = 2
+    cost = 2700
+    power = 8
+    hp = 30
+
+class E3(EarthMonster):
+    rank = 3
+    cost = 7500
+    power = 16
+    hp = 26
+
+class E4(EarthMonster):
+    rank = 4
+    cost = 18000
+    power = 10
+    hp = 72
+
+class E5(EarthMonster):
+    rank = 5
+    cost = 54000
+    power = 40
+    hp = 36
+
+class E6(EarthMonster):
+    rank = 6
+    cost = 71000
+    power = 24
+    hp = 72
+
+class F1(FireMonster):
+    rank = 1
+    cost = 1000
+    power = 10
+    hp = 16
+
+class F2(FireMonster):
+    rank = 2
+    cost = 3900
+    power = 16
+    hp = 18
+
+class F3(FireMonster):
+    rank = 3
+    cost = 8000
+    power = 8
+    hp = 54
+
+class F4(FireMonster):
+    rank = 4
+    cost = 23000
+    power = 16
+    hp = 52
+
+class F5(FireMonster):
+    rank = 5
+    cost = 31000
+    power = 24
+    hp = 42
 
 
 def power_against(attacker, victim):
@@ -79,33 +217,6 @@ def battle(team1, team2):
     return (t1, t2)
 
 
-# TODO: try to rewrite as children of monster. Might improve performance
-A1 = Monster('a', 1,  1000,  8, 20)
-A2 = Monster('a', 2,  3900,  6, 48)
-A3 = Monster('a', 3,  8000, 12, 36)
-A4 = Monster('a', 4, 15000, 26, 24)
-A5 = Monster('a', 5, 41000, 20, 60)
-
-W1 = Monster('w', 1,  1400,  6, 30)
-W2 = Monster('w', 2,  3900, 12, 24)
-W3 = Monster('w', 3,  8000, 24, 18)
-W4 = Monster('w', 4, 18000, 20, 36)
-W5 = Monster('w', 5, 52000, 18, 78)
-
-E1 = Monster('e', 1,  1300,  4, 44)
-E2 = Monster('e', 2,  2700,  8, 30)
-E3 = Monster('e', 3,  7500, 16, 26)
-E4 = Monster('e', 4, 18000, 10, 72)
-E5 = Monster('e', 5, 54000, 40, 36)
-E6 = Monster('e', 6, 71000, 24, 72)
-
-F1 = Monster('f', 1,  1000, 10, 16)
-F2 = Monster('f', 2,  3900, 16, 18)
-F3 = Monster('f', 3,  8000,  8, 54)
-F4 = Monster('f', 4, 23000, 16, 52)
-F5 = Monster('f', 5, 31000, 24, 42)
-
-
 def compose_team(enemy, cost_limit, max_length, return_first_winner):
     '''Return shortest team that is able to slain enemy team if exists or None'''
     monsters = [A5, W5, E5, F5,
@@ -116,7 +227,7 @@ def compose_team(enemy, cost_limit, max_length, return_first_winner):
     chosen_indices = [0]
     winning_team = None
     while True:
-        t = Team([monsters[x] for x in chosen_indices])
+        t = Team([monsters[x]() for x in chosen_indices])
         if t.cost() <= cost_limit:
             t1, e1 = battle(t, enemy)
             if t1:
@@ -147,7 +258,7 @@ def compose_team_action(args):
     '''Process "compose_team" action'''
     import re
     enemy_stringlist = re.findall('[AWEF]\d+', args.enemy_team.upper())
-    enemy_team = Team([eval(s) for s in enemy_stringlist])
+    enemy_team = Team([eval(s + '()') for s in enemy_stringlist])
     print('Enemy team:\n%s\n' % str(enemy_team))
     print('Brute forcing team to win.')
     t = compose_team(enemy=enemy_team, cost_limit=args.cost_limit,
