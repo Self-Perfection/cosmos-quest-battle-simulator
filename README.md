@@ -1,5 +1,5 @@
 # cosmos-quest-battle-simulator
-Simulator of monster battles in http://www.kongregate.com/games/GaiaByte/cosmos-quest
+Simulator of monster battles in http://www.kongregate.com/games/GaiaByte/cosmos-quest. Partly exercise, partly fooling around.
 
 Can simulate battle between given monster teams and compose team within given cost and number of monsters contraints to beat given enemy.
 
@@ -24,5 +24,9 @@ Note that script is self-documented (try `./monsters.py --help`, `./monsters.py 
 
 # Performance
 Defenitely needs tweaking. Current speed measurements:
-![Graph of current performance](benchmark/current_performance.svg?raw=true)
+
+![Graph of current performance (PNG)](benchmark/current_performance.png?raw=true)
+
+![Graph of current performance (SVG)](benchmark/current_performance.svg?raw=true)
+
 apparently running the simulation via `pypy` is preferable.
