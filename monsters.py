@@ -85,6 +85,36 @@ class A5(AirMonster):
     power = 20
     hp = 60
 
+class A6(AirMonster):
+    rank = 6
+    cost = 96000
+    power = 34
+    hp = 62
+
+class A7(AirMonster):
+    rank = 7
+    cost = 144000
+    power = 26
+    hp = 106
+
+class A8(AirMonster):
+    rank = 8
+    cost = 257000
+    power = 52
+    hp = 78
+
+class A9(AirMonster):
+    rank = 9
+    cost = 495000
+    power = 54
+    hp = 116
+
+class A10(AirMonster):
+    rank = 10
+    cost = 785000
+    power = 60
+    hp = 142
+
 
 class W1(WaterMonster):
     rank = 1
@@ -115,6 +145,37 @@ class W5(WaterMonster):
     cost = 52000
     power = 18
     hp = 78
+
+class W6(WaterMonster):
+    rank = 6
+    cost = 84000
+    power = 44
+    hp = 44
+
+class W7(WaterMonster):
+    rank = 7
+    cost = 159000
+    power = 32
+    hp = 92
+
+class W8(WaterMonster):
+    rank = 8
+    cost = 241000
+    power = 36
+    hp = 108
+
+class W9(WaterMonster):
+    rank = 9
+    cost = 418000
+    power = 70
+    hp = 80
+
+class W10(WaterMonster):
+    rank = 10
+    cost = 675000
+    power = 70
+    hp = 110
+
 
 class E1(EarthMonster):
     rank = 1
@@ -152,6 +213,31 @@ class E6(EarthMonster):
     power = 24
     hp = 72
 
+class E7(EarthMonster):
+    rank = 7
+    cost = 115000
+    power = 36
+    hp = 66
+
+class E8(EarthMonster):
+    rank = 8
+    cost = 215000
+    power = 60
+    hp = 60
+
+class E9(EarthMonster):
+    rank = 9
+    cost = 436000
+    power = 48
+    hp = 120
+
+class E10(EarthMonster):
+    rank = 10
+    cost = 689000
+    power = 64
+    hp = 122
+
+
 class F1(FireMonster):
     rank = 1
     cost = 1000
@@ -181,6 +267,36 @@ class F5(FireMonster):
     cost = 31000
     power = 24
     hp = 42
+
+class F6(FireMonster):
+    rank = 6
+    cost = 94000
+    power = 20
+    hp = 104
+
+class F7(FireMonster):
+    rank = 7
+    cost = 115000
+    power = 44
+    hp = 54
+
+class F8(FireMonster):
+    rank = 8
+    cost = 321000
+    power = 50
+    hp = 94
+
+class F9(FireMonster):
+    rank = 9
+    cost = 454000
+    power = 58
+    hp = 102
+
+class F10(FireMonster):
+    rank = 10
+    cost = 787000
+    power = 82
+    hp = 104
 
 
 def power_against(attacker, victim):
@@ -217,13 +333,23 @@ def battle(team1, team2):
     return (t1, t2)
 
 
+def list_monsters(cost_limit=None):
+    '''Return ordered list of monster classes limited by cost'''
+    import sys, inspect
+    current_module = sys.modules[__name__]
+    monster_list = []
+    for name, obj in inspect.getmembers(sys.modules[__name__]):
+        if inspect.isclass(obj) and issubclass(obj, Monster) and hasattr(obj, 'cost'):
+            if (not cost_limit) or obj.cost <= cost_limit:
+                monster_list.append(obj)
+
+    monster_list.sort(key=lambda x: x.cost, reverse=True)
+    return monster_list
+
+
 def compose_team(enemy, cost_limit, max_length, return_first_winner):
     '''Return shortest team that is able to slain enemy team if exists or None'''
-    monsters = [A5, W5, E5, F5,
-            A4, W4, E4, F4,
-            A3, W3, E3, F3,
-            A2, W2, E2, F2,
-            A1, W1, E1, F1]
+    monsters = list_monsters(cost_limit)
     chosen_indices = [0]
     winning_team = None
     while True:
