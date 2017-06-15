@@ -321,8 +321,8 @@ def duel(a, b):
 
 def battle(team1, team2):
     '''Return copy of teams after battle'''
-    t1 = Team(map(lambda x: copy.deepcopy(x), team1))
-    t2 = Team(map(lambda x: copy.deepcopy(x), team2))
+    t1 = Team(map(lambda x: copy.copy(x), team1))
+    t2 = Team(map(lambda x: copy.copy(x), team2))
     i1 = i2 = 0
     while i1 < len(t1) and i2 < len(t2):
         duel(t1[i1], t2[i2])
