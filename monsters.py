@@ -347,6 +347,13 @@ def list_monsters(cost_limit=None):
     return monster_list
 
 
+def team_fromstring(string):
+    '''Return Team described by freeform string'''
+    import re
+    enemy_stringlist = re.findall('[AWEF]\d+', string.upper())
+    return Team([eval(s + '()') for s in enemy_stringlist])
+
+
 def compose_team(enemy, cost_limit, max_length, return_first_winner):
     '''Return shortest team that is able to slain enemy team if exists or None'''
     monsters = list_monsters(cost_limit)
@@ -382,9 +389,7 @@ def compose_team(enemy, cost_limit, max_length, return_first_winner):
 
 def compose_team_action(args):
     '''Process "compose_team" action'''
-    import re
-    enemy_stringlist = re.findall('[AWEF]\d+', args.enemy_team.upper())
-    enemy_team = Team([eval(s + '()') for s in enemy_stringlist])
+    enemy_team = team_fromstring(args.enemy_team)
     print('Enemy team:\n%s\n' % str(enemy_team))
     print('Brute forcing team to win.')
     t = compose_team(enemy=enemy_team, cost_limit=args.cost_limit,
@@ -394,6 +399,25 @@ def compose_team_action(args):
         print('Battle result:\n%s' % str(battle(t, enemy_team)))
     else:
         exit('Winning is impossible with current constraints')
+
+
+def minimum_followers_action(args):
+    '''Process "minimum_followers" action'''
+    enemy_team = team_fromstring(args.enemy_team)
+    lo = 900
+    # TODO: more accurate determine of upper bound. Actually it is not proven that doubled cost is always enough to win.
+    hi = enemy_team.cost()*2
+    while lo+100 < hi:
+        mid = (lo+hi) // 2
+        t = compose_team(enemy=enemy_team, cost_limit=mid,
+                max_length=args.max_length, return_first_winner=True)
+        if t:
+            hi = t.cost()
+            print('%d - win' % mid)
+        else:
+            lo = mid
+            print('%d - loose' % mid)
+    print('Minimum amount of followers to win: %d' % hi)
 
 
 def parse_args():
@@ -414,6 +438,13 @@ def parse_args():
     parser_compose.add_argument('-m', '--max_length', type=int,  default=6,
             help='Maximum allowed team length (default: %(default)s)')
     parser_compose.set_defaults(func=compose_team_action)
+
+    parser_min_cost = subparsers.add_parser('minimum_followers', help='Find required amount of followers to win')
+    parser_min_cost.add_argument('enemy_team',
+            help='Free from string describing enemy team like "F5, A1" or "f3a5e2". Leftmost monster fights first.')
+    parser_min_cost.add_argument('-m', '--max_length', type=int,  default=6,
+            help='Maximum allowed team length (default: %(default)s)')
+    parser_min_cost.set_defaults(func=minimum_followers_action)
 
     return parser.parse_args()
 
