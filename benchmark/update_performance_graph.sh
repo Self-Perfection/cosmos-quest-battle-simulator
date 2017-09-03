@@ -16,7 +16,7 @@ for interpreter in 'python2' 'python3' 'pypy' 'pypy3'; do
 done
 
 CPUMODEL=$(grep -m1 'model name' /proc/cpuinfo |cut -d: -f2)
-for t in svg png; do
+for t in svg; do
     gnuplot << EOF
     set terminal $t
     set output "current_performance.$t"
@@ -31,5 +31,7 @@ EOF
 done
 
 #Lossleless optimization of png compression
-optipng -i 0 -o7 current_performance.png
-advdef -z4 current_performance.png
+if [ -r 'current_performance.png']; then
+    optipng -i 0 -o7 current_performance.png
+    advdef -z4 current_performance.png
+fi

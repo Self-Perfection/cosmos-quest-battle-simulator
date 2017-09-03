@@ -25,8 +25,6 @@ Note that script is self-documented (try `./monsters.py --help`, `./monsters.py 
 # Performance
 Defenitely needs tweaking. Current speed measurements:
 
-![Graph of current performance (PNG)](benchmark/current_performance.png?raw=true)
-
-![Graph of current performance (SVG)](benchmark/current_performance.svg?raw=true)
+![Graph of current performance (SVG)](benchmark/current_performance.svg)
 
 apparently running the simulation via `pypy` is preferable.
